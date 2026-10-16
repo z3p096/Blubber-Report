@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Blubber Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/* Layout: same single-column feed, restyled as a neon terminal over a receding city grid. Deliberately dark-only. */
+:root{color-scheme:dark;
+--bg:#07060F;--surface:rgba(16,12,34,.82);--ink:#E9F7FF;--mute:#8FA3C7;--line:#2A2350;
+--blub:#FF2E97;--sea:#00F0FF;--gold:#FFD23F;--up:#39FF88;--down:#FF6B3D;--violet:#B26BFF;
+--display:"Chakra Petch",system-ui,sans-serif;--mono:"Share Tech Mono",ui-monospace,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100%;color:var(--ink);font:400 16px/1.55 var(--display);
+background:
+ radial-gradient(ellipse 90% 55% at 50% 0%,rgba(255,46,151,.22),transparent 70%),
+ radial-gradient(ellipse 70% 45% at 85% 100%,rgba(0,240,255,.14),transparent 70%),
+ var(--bg);background-attachment:fixed}
+/* perspective grid floor */
+body::before{content:"";position:fixed;left:-50%;right:-50%;bottom:-10vh;height:60vh;z-index:0;pointer-events:none;
+background-image:linear-gradient(rgba(178,107,255,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.28) 1px,transparent 1px);
+background-size:48px 48px;transform:perspective(420px) rotateX(62deg);transform-origin:bottom;
+-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 85%);mask-image:linear-gradient(to top,#000 10%,transparent 85%);
+animation:drift 6s linear infinite}
+/* scanlines */
+body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
+background:repeating-linear-gradient(to bottom,rgba(255,255,255,.035) 0 1px,transparent 1px 3px)}
+@keyframes drift{to{background-position:0 48px}}
+@media (prefers-reduced-motion:reduce){body::before{animation:none}}
+main{position:relative;z-index:1;max-width:720px;margin:0 auto;padding-block:20px 48px;
+padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:clamp(2.4rem,9vw,3.8rem);line-height:.95;margin:8px 0 6px;font-weight:700;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance;
+text-shadow:0 0 18px rgba(0,240,255,.35)}
+h1 span{color:var(--blub);text-shadow:0 0 6px var(--blub),0 0 24px rgba(255,46,151,.7)}
+.sub{color:var(--mute);margin:0 0 18px;font-family:var(--mono);font-size:.9rem}
+.sub::before{content:"> ";color:var(--sea)}
+.prices{display:flex;gap:10px;margin-bottom:22px}
+.prices div{flex:1;min-width:0;background:var(--surface);border:1px solid var(--sea);padding:10px 12px;
+clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+box-shadow:inset 0 0 18px rgba(0,240,255,.12)}
+.prices b{display:block;font-family:var(--mono);font-weight:400;font-size:1.3rem;font-variant-numeric:tabular-nums;color:var(--sea);text-shadow:0 0 8px rgba(0,240,255,.6)}
+.prices small{color:var(--mute);text-transform:uppercase;letter-spacing:.12em;font-size:.72rem}
+.chg{font-family:var(--mono);font-size:.8rem;font-variant-numeric:tabular-nums}
+.chg.up{color:var(--up)}.chg.flat{color:var(--mute)}.chg.down{color:var(--down)}
+.story{border-left:3px solid var(--blub);box-shadow:-6px 0 14px -6px var(--blub);padding:4px 0 4px 14px;margin:0 0 22px;font-size:1.05rem;max-width:65ch}
+.story p{margin:0 0 8px}
+.story b{color:var(--blub)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+.chips button{flex:none;font:inherit;font-family:var(--mono);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--sea);background:transparent;border:1px solid rgba(0,240,255,.45);border-radius:0;padding:8px 14px;min-height:40px;cursor:pointer}
+.chips button:hover{background:rgba(0,240,255,.08)}
+.chips button[aria-pressed="true"]{background:var(--sea);color:var(--bg);border-color:var(--sea);box-shadow:0 0 14px rgba(0,240,255,.6)}
+.chips button:focus-visible{outline:2px solid var(--blub);outline-offset:2px}
+.section{font-family:var(--mono);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--violet);margin:18px 0 8px}
+.section::before{content:"// "}
+.move{background:var(--surface);border:1px solid var(--line);padding:14px;margin-bottom:12px;backdrop-filter:blur(4px);
+clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%)}
+.move:hover{border-color:var(--violet)}
+.move h2{font-size:1.12rem;margin:0 0 4px;font-weight:600;text-wrap:balance}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tag{display:inline-block;font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;color:var(--bg)}
+.t-wake{background:var(--gold)}.t-rot{background:var(--sea)}.t-ex{background:var(--blub)}.t-long{background:var(--violet)}.t-sell{background:var(--down)}.t-buy{background:var(--up)}
+.t-new{background:transparent;color:var(--blub);border:1px solid var(--blub);padding:1px 7px;text-shadow:0 0 6px var(--blub)}
+.move p{margin:4px 0 8px;color:var(--mute);font-size:.95rem}
+.bar{height:8px;background:rgba(42,35,80,.9);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--blub));box-shadow:0 0 10px var(--blub)}
+.amt{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.88rem;margin-top:6px}
+.amt b{font-family:var(--mono);font-weight:400;font-size:1.02rem;font-variant-numeric:tabular-nums;color:var(--gold)}
+.src{color:var(--mute);font-family:var(--mono)}
+.src a,.sources a{color:var(--sea);text-underline-offset:3px;text-decoration-color:rgba(0,240,255,.4)}
+.src a:hover,.sources a:hover{text-shadow:0 0 8px rgba(0,240,255,.7)}
+.src a:focus-visible,.sources a:focus-visible{outline:2px solid var(--blub);outline-offset:2px}
+.sources{margin-top:28px;border-top:1px dashed var(--line);padding-top:6px}
+.sources h3{font-family:var(--mono);font-size:.8rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--violet);margin:14px 0 6px}
+.sources ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sources li{font-size:.92rem;line-height:1.4;min-width:0;overflow-wrap:anywhere}
+.sources li span{color:var(--mute);font-family:var(--mono);font-size:.82rem}
+footer{margin-top:26px;color:var(--mute);font-size:.82rem;font-family:var(--mono)}
+@media (max-width:420px){.prices{gap:6px}.prices div{padding:8px}.prices b{font-size:1.05rem}}
+</style>
+
+</head><body>
+<main>
+<h1>The <span>Blubber</span> Report</h1>
+<p class="sub">Where the big money is swimming. Edition of Friday, Oct 16, 2026. Whale moves update each weekday morning.</p>
+
+<div class="prices">
+<div><small>Bitcoin</small><b id="p-bitcoin">~$81,430</b><span class="chg down" id="c-bitcoin">−1.2% · 24h</span></div>
+<div><small>Ether</small><b id="p-ethereum">~$2,424</b><span class="chg down" id="c-ethereum">−0.9% · 24h</span></div>
+<div><small>XRP</small><b id="p-ripple">~$1.31</b><span class="chg down" id="c-ripple">−2.7% · 24h</span></div>
+</div>
+
+<div class="story">
+<p><b>Midday reversal:</b> the morning bounce faded. Bitcoin slipped back below $81,500 as oil climbed and AI-linked tech stocks sold off, and Ether gave back its overnight gain of about 5%. Liquidations stayed calm, at about $290M market-wide versus $929M the day before.</p>
+<p>Earlier, Ether had jumped as whales bought the pullback and hotter inflation reports failed to knock crypto down. The Bitcoin-for-Ether rotation is still the week's main theme.</p>
+<p>Not every whale is buying: one trader cashed out a two-month Ether long, and a Solana whale sold for the first time since August. CryptoQuant says big Bitcoin wallets now hold 3.03M BTC, the most since November 2025.</p>
+</div>
+
+<p class="src" id="live-note" style="margin:-14px 0 18px;font-size:.8rem">Prices shown as of publish time.</p>
+
+<div class="chips" id="chips" role="group" aria-label="Filter moves">
+<button data-f="all" aria-pressed="true">All moves</button>
+<button data-f="new" aria-pressed="false">New today</button>
+<button data-f="rot" aria-pressed="false">BTC to ETH</button>
+<button data-f="buy" aria-pressed="false">Buying</button>
+<button data-f="sell" aria-pressed="false">Selling</button>
+<button data-f="long" aria-pressed="false">Leveraged</button>
+<button data-f="wake" aria-pressed="false">Waking up</button>
+<button data-f="ex" aria-pressed="false">To exchanges</button>
+</div>
+
+<div id="list"></div>
+
+<section class="sources" aria-labelledby="src-h">
+<h3 id="src-h">Sources</h3>
+<h3>Prices and market story</h3>
+<ul>
+<li><a href="https://news.bitcoin.com/market-updates/bitcoin-price-hovers-near-81k-analysts-see-market-bottom/" target="_blank" rel="noopener">Bitcoin price hovers near $81K</a> <span>· Bitcoin.com</span></li>
+<li><a href="https://finance.yahoo.com/personal-finance/investing/article/bitcoin-and-ethereum-prices-today-friday-october-16-2026-bitcoin-ethereum-prices-firm-despite-two-strong-inflation-reports-113928147.html" target="_blank" rel="noopener">Bitcoin and ethereum prices today, Oct 16</a> <span>· Yahoo Finance</span></li>
+<li><a href="https://fortune.com/article/price-of-bitcoin-10-16-2026/" target="_blank" rel="noopener">Current price of Bitcoin, Oct 16</a> <span>· Fortune</span></li>
+<li><a href="https://www.cryptonewsz.com/ethereum-price-recovers-5-whales-take-charge/" target="_blank" rel="noopener">Ethereum surges 5% amid whale buying</a> <span>· CryptoNewsZ</span></li>
+<li><a href="https://news.bitcoin.com/cryptoquant-bitcoin-whales-back-mystery-buyer-97m-wintermute/" target="_blank" rel="noopener">CryptoQuant says Bitcoin whales are back</a> <span>· Bitcoin.com</span></li>
+</ul>
+<h3>Whale moves</h3>
+<ul>
+<li><a href="https://www.techflowpost.com/en-US/newsletter/140203" target="_blank" rel="noopener">Trader holds $186.7M in BTC and ETH longs</a> <span>· TechFlow</span></li>
+<li><a href="https://www.coingabbar.com/en/ethereum-news-today-btc-eth-price-whale-buying-eth-etf-flows" target="_blank" rel="noopener">Ethereum news: whale buys and leverage</a> <span>· CoinGabbar</span></li>
+<li><a href="https://www.techflowpost.com/en-US/newsletter/140021" target="_blank" rel="noopener">20,000 ETH long closed for $8.93M profit</a> <span>· TechFlow</span></li>
+<li><a href="https://www.techflowpost.com/en-US/newsletter/140165" target="_blank" rel="noopener">Hamr4x sells 145,010 SOL</a> <span>· TechFlow</span></li>
+<li><a href="https://www.techflowpost.com/en-US/newsletter/140078" target="_blank" rel="noopener">Whale buys 6,010 ETH on the dip</a> <span>· TechFlow</span></li>
+<li><a href="https://www.tokenpost.com/news/investing/32143" target="_blank" rel="noopener">Whale sells 1,312 BTC to buy 43,275 ETH</a> <span>· TokenPost</span></li>
+<li><a href="https://panews.io/articles/01a13d09-4c3c-711e-abf5-95b929971201" target="_blank" rel="noopener">Whale sells 1,312 BTC for 43,000 ETH over 4 days</a> <span>· PANews</span></li>
+<li><a href="https://www.cointribune.com/en/to-fully-invest-in-ethereum-a-whale-sells-90-million-worth-of-bitcoin" target="_blank" rel="noopener">Whale sells $90M of Bitcoin for Ethereum</a> <span>· Cointribune</span></li>
+<li><a href="https://www.theblock.co/news/markets/2026-10-13-bitcoin-whale-moves-378-million-418383" target="_blank" rel="noopener">Bitcoin whale moves $378 million</a> <span>· The Block</span></li>
+<li><a href="https://crypto.news/bitcoin-whale-moves-378m-after-6-years/" target="_blank" rel="noopener">Bitcoin whale moves $378M after 6 years</a> <span>· crypto.news</span></li>
+<li><a href="https://panews.io/articles/01a11970-4ee4-7523-b5ac-d4ea5f2fddc0" target="_blank" rel="noopener">Whale moves 4,500 BTC after four years</a> <span>· PANews</span></li>
+<li><a href="https://www.techflowpost.com/en-US/newsletter/139769" target="_blank" rel="noopener">Whale opens 24,000 ETH long on Hyperliquid</a> <span>· TechFlow</span></li>
+<li><a href="https://beincrypto.com/hyperliquid-whale-goes-long-ethereum/" target="_blank" rel="noopener">The whale behind $29.75M in wins goes long ETH</a> <span>· BeInCrypto</span></li>
+<li><a href="https://news.bitcoin.com/featured/xrp-whales-move-1-67-billion-tokens-to-binance-as-price-slips/" target="_blank" rel="noopener">XRP whales move 1.67B tokens to Binance</a> <span>· Bitcoin.com</span></li>
+</ul>
+</section>
+
+<footer>
+Figures are rounded from the public reports listed above, which cite Lookonchain, Arkham, EmberCN and CryptoQuant. This is a snapshot, not live data, and sizes may change as trades finish. Whale moves are not buy or sell signals. Not financial advice.
+</footer>
+</main>
+
+<script>
+var M=[
+{n:1,f:"long",t:"Leveraged",h:"Trader holds $186.7M in BTC and ETH longs",p:"Lookonchain flagged one account running long positions on both coins at maximum leverage. Big leveraged bets can be forced shut quickly if prices drop.",d:"Oct 16",v:186.7,l:"$186.7M",src:"Lookonchain",u:"https://www.techflowpost.com/en-US/newsletter/140203"},
+{n:1,f:"sell",t:"Selling",h:"Ether long closed for an $8.93M profit",p:"20,000 ETH (about $48.4M) opened on Aug 19 and held 56 days. Paper profit had peaked near $17M before the close.",d:"Oct 15",v:48.4,l:"$8.93M profit",src:"Lookonchain",u:"https://www.techflowpost.com/en-US/newsletter/140021"},
+{n:1,f:"sell",t:"Selling",h:"Solana whale sells 145,010 SOL",p:"Wallet Hamr4x sold again after a two-month pause.",d:"Oct 16",v:15.25,l:"$15.25M",src:"Lookonchain",u:"https://www.techflowpost.com/en-US/newsletter/140165"},
+{n:1,f:"buy",t:"Buying",h:"Whale buys back 6,010 ETH on the dip",p:"The same wallet earlier sold 2,050 ETH for about $1.08M profit, then bought back in at lower prices.",d:"Oct 15",v:14.23,l:"$14.23M",src:"Lookonchain",u:"https://www.techflowpost.com/en-US/newsletter/140078"},
+{n:0,f:"rot",t:"BTC to ETH",h:"Whale swaps Bitcoin for 43,275 ETH",p:"Described as an over-the-counter deal, which keeps the coins off the open market.",d:"Oct 14",v:109,l:"$109M",src:"EmberCN",u:"https://www.tokenpost.com/news/investing/32143"},
+{n:0,f:"rot",t:"BTC to ETH",h:"Whale sells 1,074 BTC, buys 36,159 ETH",p:"Done over three days via Hyperliquid and decentralized exchanges. The BTC was bought near $95K, so it sold at a loss. The buyer is unknown.",d:"Oct 11 to 14",v:90.6,l:"$90.6M",src:"Lookonchain",u:"https://www.cointribune.com/en/to-fully-invest-in-ethereum-a-whale-sells-90-million-worth-of-bitcoin"},
+{n:0,f:"wake",t:"Waking up",h:"Six-year-old Bitcoin wallet empties out",p:"4,582 BTC split into five new addresses on Oct 12. Received in March 2020, when it was worth about $41M. None of it had moved again at last report.",d:"Oct 12",v:377.6,l:"$377.6M",src:"The Block",u:"https://www.theblock.co/news/markets/2026-10-13-bitcoin-whale-moves-378-million-418383"},
+{n:0,f:"wake",t:"Waking up",h:"Another long sleeper moves 4,500 BTC",p:"A wallet idle for over four years sent its coins to a single address the week before.",d:"Early Oct",v:375.7,l:"$375.7M",src:"The Block",u:"https://panews.io/articles/01a11970-4ee4-7523-b5ac-d4ea5f2fddc0"},
+{n:0,f:"long",t:"Leveraged",h:"Hyperliquid whale opens a 24,000 ETH long",p:"A trader with about $29.75M in profits from 15 trades opened the position. It was showing roughly $2.6M unrealized gain at last report.",d:"Oct 13",v:60.7,l:"$60.7M",src:"Lookonchain",u:"https://www.techflowpost.com/en-US/newsletter/139769"},
+{n:0,f:"ex",t:"To exchanges",h:"XRP whales send 1.67 billion XRP to Binance",p:"30-day total and the highest in seven months. Coins sent to exchanges can be sold, though they do not have to be.",d:"30 days",v:0,l:"About $2.2B",src:"CryptoQuant",u:"https://news.bitcoin.com/featured/xrp-whales-move-1-67-billion-tokens-to-binance-as-price-slips/"}
+];
+var cur="all",max=380;
+function card(m){
+var s=m.u?'<a href="'+m.u+'" target="_blank" rel="noopener">'+m.src+'</a>':m.src;
+return '<article class="move"><div class="tags">'+(m.n?'<span class="tag t-new">New today</span>':'')+'<span class="tag t-'+m.f+'">'+m.t+'</span></div><h2>'+m.h+'</h2><p>'+m.p+'</p>'+
+(m.v?'<div class="bar" aria-hidden="true"><i style="width:'+Math.max(3,m.v/max*100)+'%"></i></div>':'')+
+'<div class="amt"><b>'+m.l+'</b><span class="src">'+m.d+' · '+s+'</span></div></article>';
+}
+function draw(){
+var shown=M.filter(function(m){return cur==="all"||(cur==="new"?m.n:m.f===cur)});
+var fresh=shown.filter(function(m){return m.n}),old=shown.filter(function(m){return !m.n});
+var h="";
+if(fresh.length)h+='<div class="section">Today</div>'+fresh.map(card).join("");
+if(old.length)h+='<div class="section">Earlier this week</div>'+old.map(card).join("");
+document.getElementById("list").innerHTML=h||'<p class="src">No moves in this category yet.</p>';
+}
+document.getElementById("chips").addEventListener("click",function(e){
+var b=e.target.closest("button");if(!b)return;
+cur=b.dataset.f;
+this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b)});
+draw();
+});
+draw();
+
+/* Live prices from CoinGecko; falls back to the published snapshot if unavailable */
+(function(){
+var ids=["bitcoin","ethereum","ripple"];
+function fmt(id,v){return "$"+(id==="ripple"?v.toFixed(2):Math.round(v).toLocaleString("en-US"))}
+function load(){
+fetch("https://api.coingecko.com/api/v3/simple/price?ids="+ids.join(",")+"&vs_currencies=usd&include_24hr_change=true")
+.then(function(r){if(!r.ok)throw 0;return r.json()})
+.then(function(d){
+ids.forEach(function(id){var x=d[id];if(!x||x.usd==null)return;
+document.getElementById("p-"+id).textContent=fmt(id,x.usd);
+var c=document.getElementById("c-"+id),ch=x.usd_24h_change;
+if(ch!=null){c.textContent=(ch>=0?"+":"\u2212")+Math.abs(ch).toFixed(1)+"% \u00b7 24h";c.className="chg "+(ch>0.05?"up":ch<-0.05?"down":"flat")}});
+document.getElementById("live-note").textContent="Live prices via CoinGecko, updated "+new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+".";
+}).catch(function(){});
+}
+load();setInterval(load,60000);
+})();
+</script>
+</body></html>
